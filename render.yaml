@@ -9,6 +9,8 @@ services:
       npm run build
       echo "Build completed. Contents of dist directory:"
       ls -la dist/
+      echo "Contents of current directory:"
+      ls -la
     startCommand: node dist/index.js
     envVars:
       - key: NODE_ENV
