@@ -1,6 +1,6 @@
 import { Request, Response } from 'express';
 import { validationResult } from 'express-validator';
-import Post, { PostAttributes, PostCreationAttributes } from '../models/Post';
+import Post, { PostCreationAttributes } from '../models/Post';
 import Author from '../models/Author';
 
 class PostController {

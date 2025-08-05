@@ -4,7 +4,7 @@ import Author from '../models/Author';
 
 class AuthorController {
   // Get all authors
-  static async index(req: Request, res: Response) {
+  static async index(_req: Request, res: Response) {
     try {
       const authors = await Author.findAll();
       return res.json(authors);
