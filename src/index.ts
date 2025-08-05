@@ -27,7 +27,7 @@ async function testConnection() {
 }
 
 // Routes
-app.get('/', (req: Request, res: Response) => {
+app.get('/', (_req: Request, res: Response) => {
   res.json({ message: 'Welcome to the Institutional CMS API' });
 });
 
@@ -36,12 +36,12 @@ app.use('/api/authors', authorRoutes);
 app.use('/api/posts', postRoutes);
 
 // 404 handler
-app.use((req: Request, res: Response) => {
+app.use((_req: Request, res: Response) => {
   res.status(404).json({ error: 'Not Found' });
 });
 
 // Error handling middleware
-app.use((err: Error, req: Request, res: Response, next: NextFunction) => {
+app.use((err: Error, _req: Request, res: Response, _next: NextFunction) => {
   console.error('Error:', err.stack);
   res.status(500).json({ 
     error: 'Internal Server Error',
