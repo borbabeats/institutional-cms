@@ -1,0 +1,14 @@
+services:
+  - type: web
+    name: institutional-cms
+    env: node
+    buildCommand: npm install && npm run build
+    startCommand: npm start
+    envVars:
+      - key: NODE_ENV
+        value: production
+      - key: PORT
+        value: 10000
+      # Add other environment variables from your .env file here
+      # Make sure to set them in Render's dashboard as well
+    plan: free
