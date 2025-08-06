@@ -9,6 +9,10 @@ const createPostRules = [
   body('title').notEmpty().withMessage('Title is required'),
   body('content').notEmpty().withMessage('Content is required'),
   body('author_id').isInt().withMessage('Author ID must be an integer'),
+  body('category')
+    .optional()
+    .isIn(['criminal', 'familiar', 'trabalhista'])
+    .withMessage('Invalid category value'),
   body('status')
     .optional()
     .isIn(['draft', 'published', 'archived'])
@@ -19,6 +23,10 @@ const updatePostRules = [
   param('id').isInt().withMessage('Invalid post ID'),
   body('title').optional().notEmpty().withMessage('Title cannot be empty'),
   body('content').optional().notEmpty().withMessage('Content cannot be empty'),
+  body('category')
+    .optional()
+    .isIn(['criminal', 'familiar', 'trabalhista'])
+    .withMessage('Invalid category value'),
   body('status')
     .optional()
     .isIn(['draft', 'published', 'archived'])
@@ -32,6 +40,10 @@ const getPostsRules = [
     .isIn(['draft', 'published', 'archived'])
     .withMessage('Invalid status value'),
   query('author_id').optional().isInt().withMessage('Author ID must be an integer'),
+  query('category')
+    .optional()
+    .isIn(['criminal', 'familiar', 'trabalhista'])
+    .withMessage('Invalid category value'),
   query('page').optional().isInt({ min: 1 }).withMessage('Page must be a positive integer'),
   query('limit').optional().isInt({ min: 1, max: 100 }).withMessage('Limit must be between 1 and 100'),
 ];

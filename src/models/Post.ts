@@ -2,12 +2,15 @@ import { Model, DataTypes, Optional } from 'sequelize';
 import sequelize from '../database/sequelize';
 import Author from './Author';
 
+export type PostCategory = 'criminal' | 'familiar' | 'trabalhista';
+
 export interface PostAttributes {
   id: number;
   author_id: number;
   title: string;
   slug: string;
   content: string;
+  category: PostCategory;
   status: 'draft' | 'published' | 'archived';
   created_at?: Date;
   updated_at?: Date;
@@ -21,6 +24,7 @@ class Post extends Model<PostAttributes, PostCreationAttributes> implements Post
   public title!: string;
   public slug!: string;
   public content!: string;
+  public category!: PostCategory;
   public status!: 'draft' | 'published' | 'archived';
   public readonly created_at!: Date;
   public readonly updated_at!: Date;
@@ -60,8 +64,13 @@ Post.init(
       unique: true,
     },
     content: {
-      type: DataTypes.TEXT('medium'),
+      type: DataTypes.TEXT,
       allowNull: false,
+    },
+    category: {
+      type: DataTypes.ENUM('criminal', 'familiar', 'trabalhista'),
+      allowNull: false,
+      defaultValue: 'criminal',
     },
     status: {
       type: DataTypes.ENUM('draft', 'published', 'archived'),
@@ -99,5 +108,11 @@ Author.hasMany(Post, {
   foreignKey: 'author_id',
   as: 'posts',
 });
+
+// Adiciona método toJSON personalizado para garantir que a categoria seja incluída
+Post.prototype.toJSON = function() {
+  const values = Object.assign({}, this.get());
+  return values;
+};
 
 export default Post;
