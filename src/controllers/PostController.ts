@@ -7,12 +7,13 @@ class PostController {
   // Get all posts with optional filtering and pagination
   static async index(req: Request, res: Response) {
     try {
-      const { status, author_id, page = 1, limit = 10 } = req.query;
+      const { status, author_id, slug, page = 1, limit = 10 } = req.query;
       const offset = (Number(page) - 1) * Number(limit);
       
       const where: any = {};
       if (status) where.status = status;
       if (author_id) where.author_id = author_id;
+      if (slug) where.slug = slug;
 
       const { count, rows: posts } = await Post.findAndCountAll({
         where,
