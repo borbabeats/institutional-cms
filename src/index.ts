@@ -4,6 +4,8 @@ import cors from 'cors';
 import sequelize from './database/sequelize';
 import authorRoutes from './routes/author.routes';
 import postRoutes from './routes/post.routes';
+import categoryRoutes from './routes/category.routes';
+import setupAssociations from './models/associations';
 
 const app = express();
 
@@ -11,20 +13,23 @@ const app = express();
 app.use(cors({ origin: 'http://localhost:4321' }));
 app.use(express.json());
 
+// Configure model associations
+setupAssociations();
+
 // Test database connection
-async function testConnection() {
+const testConnection = async () => {
   try {
     await sequelize.authenticate();
     console.log('Database connection has been established successfully.');
     
-    // Sync all models with the database
-    await sequelize.sync();
+    // Sync database
+    await sequelize.sync({ force: false });
     console.log('All models were synchronized successfully.');
   } catch (error) {
     console.error('Unable to connect to the database:', error);
     process.exit(1);
   }
-}
+};
 
 // Routes
 app.get('/', (_req: Request, res: Response) => {
@@ -34,6 +39,7 @@ app.get('/', (_req: Request, res: Response) => {
 // API Routes
 app.use('/api/authors', authorRoutes);
 app.use('/api/posts', postRoutes);
+app.use('/api', categoryRoutes);
 
 // 404 handler
 app.use((_req: Request, res: Response) => {
