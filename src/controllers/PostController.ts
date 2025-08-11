@@ -2,37 +2,100 @@ import { Request, Response } from 'express';
 import { validationResult } from 'express-validator';
 import Post, { PostCreationAttributes } from '../models/Post';
 import Author from '../models/Author';
+import { Op } from 'sequelize';
 
 class PostController {
   // Get all posts with optional filtering and pagination
   static async index(req: Request, res: Response) {
     try {
-      const { status, author_id, slug, category_id, page = 1, limit = 10 } = req.query;
+      const { 
+        status, 
+        author_id, 
+        slug, 
+        category_id, 
+        category_slug, 
+        term, 
+        page = 1, 
+        limit = 10 
+      } = req.query as any;
+      
       const offset = (Number(page) - 1) * Number(limit);
       
+      // Base where conditions
       const where: any = {};
       if (status) where.status = status;
       if (author_id) where.author_id = author_id;
       if (slug) where.slug = slug;
-      if (category_id) where.category_id = category_id;
+      
+      // Handle category filters
+      const include: any[] = [
+        {
+          model: Author,
+          as: 'author',
+          attributes: ['id', 'name', 'email']
+        },
+        {
+          model: (await import('../models/Category')).default,
+          as: 'category',
+          attributes: ['id', 'name', 'slug'],
+          required: false
+        }
+      ];
+
+      // Apply category filters if provided
+      if (category_id) {
+        where.category_id = category_id;
+      } 
+      
+      // Handle category slug filtering
+      if (category_slug) {
+        // Get the category ID first to filter posts directly
+        const Category = (await import('../models/Category')).default;
+        const category = await Category.findOne({
+          where: { slug: category_slug },
+          attributes: ['id']
+        });
+
+        if (category) {
+          where.category_id = category.id;
+          console.log(`[DEBUG] Found category ID ${category.id} for slug '${category_slug}'`);
+        } else {
+          console.log(`[DEBUG] No category found with slug '${category_slug}'`);
+          // Return empty result if category doesn't exist
+          return res.json({
+            data: [],
+            meta: { total: 0, page: Number(page), totalPages: 0 }
+          });
+        }
+      }
+      
+      // Case-insensitive filter by title using LIKE %term%
+      if (term && String(term).trim() !== '') {
+        const value = `%${String(term).trim()}%`;
+        where.title = { [Op.like]: value };
+      }
+
+      // Debug logging in development
+      if (process.env.NODE_ENV === 'development') {
+        console.log('[GET /posts] Query params:', { 
+          status, 
+          author_id, 
+          category_id, 
+          category_slug, 
+          term, 
+          page, 
+          limit 
+        });
+      }
 
       const { count, rows: posts } = await Post.findAndCountAll({
         where,
-        include: [
-          {
-            model: Author,
-            as: 'author',
-            attributes: ['id', 'name', 'email']
-          },
-          {
-            model: (await import('../models/Category')).default,
-            as: 'category',
-            attributes: ['id', 'name', 'slug']
-          }
-        ],
+        distinct: true,
+        include,
         limit: Number(limit),
         offset,
-        order: [['created_at', 'DESC']]
+        order: [['created_at', 'DESC']],
+        logging: (sql) => console.log('[Sequelize SQL]', sql)
       });
 
       return res.json({

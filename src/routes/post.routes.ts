@@ -40,10 +40,8 @@ const getPostsRules = [
     .isIn(['draft', 'published', 'archived'])
     .withMessage('Invalid status value'),
   query('author_id').optional().isInt().withMessage('Author ID must be an integer'),
-  query('category')
-    .optional()
-    .isIn(['criminal', 'familiar', 'trabalhista'])
-    .withMessage('Invalid category value'),
+  query('category_id').optional().isInt().withMessage('Category ID must be an integer'),
+  query('category_slug').optional().isString().withMessage('Category slug must be a string'),
   query('page').optional().isInt({ min: 1 }).withMessage('Page must be a positive integer'),
   query('limit').optional().isInt({ min: 1, max: 100 }).withMessage('Limit must be between 1 and 100'),
 ];
