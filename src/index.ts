@@ -5,12 +5,17 @@ import sequelize from './database/sequelize';
 import authorRoutes from './routes/author.routes';
 import postRoutes from './routes/post.routes';
 import categoryRoutes from './routes/category.routes';
+import vehicleCorRoutes from './routes/VehicleCor.routes';
+import vehicleMarcaRoutes from './routes/VehicleMarca.routes';
+import vehicleAnoRoutes from './routes/VehicleAno.routes';
+import vehicleCategoriesRoutes from './routes/VehicleCategories.routes';
+import vehicleRoutes from './routes/Vehicles.routes';
 import setupAssociations from './models/associations';
 
 const app = express();
 
 // Middleware
-app.use(cors({ origin: 'https://institutional-basic.vercel.app' }));
+app.use(cors({ origin: ['https://institutional-basic.vercel.app', 'http://localhost:4321'] }));
 app.use(express.json());
 
 // Configure model associations
@@ -40,6 +45,11 @@ app.get('/', (_req: Request, res: Response) => {
 app.use('/api/authors', authorRoutes);
 app.use('/api/posts', postRoutes);
 app.use('/api', categoryRoutes);
+app.use('/api/vehicle-cor', vehicleCorRoutes);
+app.use('/api/vehicle-marca', vehicleMarcaRoutes);
+app.use('/api/vehicle-ano', vehicleAnoRoutes);
+app.use('/api/vehicle-categories', vehicleCategoriesRoutes);
+app.use('/api/vehicles', vehicleRoutes);
 
 // 404 handler
 app.use((_req: Request, res: Response) => {
