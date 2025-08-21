@@ -6,7 +6,7 @@ const router = Router();
 
 // Validation rules
 const createVehicleRules = [
-  body('nome').notEmpty().withMessage('Name is required'),
+  body('modelo').notEmpty().withMessage('Model is required'),
   body('preco').isDecimal().withMessage('Price must be a decimal'),
   body('quilometragem').isInt().withMessage('Mileage must be an integer'),
   body('tipo_combustivel').notEmpty().withMessage('Fuel type is required'),
@@ -20,7 +20,7 @@ const createVehicleRules = [
 ];
 
 const updateVehicleRules = [
-  body('nome').optional().notEmpty().withMessage('Name cannot be empty'),
+  body('modelo').optional().notEmpty().withMessage('Model cannot be empty'),
   body('preco').optional().isDecimal().withMessage('Price must be a decimal'),
   body('quilometragem').optional().isInt().withMessage('Mileage must be an integer'),
   body('tipo_combustivel').optional().notEmpty().withMessage('Fuel type cannot be empty'),
@@ -35,6 +35,7 @@ const updateVehicleRules = [
 
 // Routes
 router.get('/', VehicleController.index);
+router.get('/search', VehicleController.search);
 router.get('/:id', VehicleController.show);
 router.post('/', createVehicleRules, VehicleController.store);
 router.put('/:id', updateVehicleRules, VehicleController.update);

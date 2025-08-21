@@ -10,12 +10,14 @@ import vehicleMarcaRoutes from './routes/VehicleMarca.routes';
 import vehicleAnoRoutes from './routes/VehicleAno.routes';
 import vehicleCategoriesRoutes from './routes/VehicleCategories.routes';
 import vehicleRoutes from './routes/Vehicles.routes';
+import vehicleImageRoutes from './routes/VehicleImage.routes';
+import vehicleOptionalRoutes from './routes/VehicleOptional.routes';
 import setupAssociations from './models/associations';
 
 const app = express();
 
 // Middleware
-app.use(cors({ origin: ['https://institutional-basic.vercel.app', 'http://localhost:4321'] }));
+app.use(cors({ origin: ['https://institutional-basic.vercel.app', 'http://localhost:4321', 'http://localhost:3001'] }));
 app.use(express.json());
 
 // Configure model associations
@@ -50,6 +52,8 @@ app.use('/api/vehicle-marca', vehicleMarcaRoutes);
 app.use('/api/vehicle-ano', vehicleAnoRoutes);
 app.use('/api/vehicle-categories', vehicleCategoriesRoutes);
 app.use('/api/vehicles', vehicleRoutes);
+app.use('/api/vehicle-images', vehicleImageRoutes);
+app.use('/api/vehicle-optionals', vehicleOptionalRoutes);
 
 // 404 handler
 app.use((_req: Request, res: Response) => {
