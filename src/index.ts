@@ -17,7 +17,7 @@ import setupAssociations from './models/associations';
 const app = express();
 
 // Middleware
-app.use(cors({ origin: ['https://institutional-basic.vercel.app', 'http://localhost:4321', 'http://localhost:3001'] }));
+app.use(cors({ origin: ['https://institutional-basic.vercel.app', 'https://dashboard-central.vercel.app'] }));
 app.use(express.json());
 
 // Configure model associations
