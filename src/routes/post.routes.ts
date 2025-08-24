@@ -46,14 +46,15 @@ const getPostsRules = [
   query('limit').optional().isInt({ min: 1, max: 100 }).withMessage('Limit must be between 1 and 100'),
 ];
 
+const deletePostRules = [
+  param('id').isInt().withMessage('Invalid post ID'),
+];
+
 // Routes
 router.get('/', getPostsRules, PostController.index);
 router.get('/:id', PostController.show);
 router.post('/', createPostRules, PostController.store);
 router.put('/:id', updatePostRules, PostController.update);
-router.delete('/:id', 
-  param('id').isInt().withMessage('Invalid post ID'),
-  PostController.destroy
-);
+router.delete('/:id', deletePostRules, PostController.destroy);
 
 export default router;

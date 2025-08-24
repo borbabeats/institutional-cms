@@ -33,6 +33,8 @@ const updateVehicleRules = [
   body('categoria_id').optional().isInt().withMessage('Categoria ID must be an integer'),
 ];
 
+
+
 // Routes
 router.get('/', VehicleController.index);
 router.get('/search', VehicleController.search);
