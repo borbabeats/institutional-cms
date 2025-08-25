@@ -9,16 +9,16 @@ const createVehicleRules = [
   body('modelo').notEmpty().withMessage('Model is required'),
   body('preco').isDecimal().withMessage('Price must be a decimal'),
   body('quilometragem').isInt().withMessage('Mileage must be an integer'),
-  body('tipo_combustivel').notEmpty().withMessage('Fuel type is required'),
-  body('transmissao').notEmpty().withMessage('Transmission is required'),
+  body('tipo_combustivel_id').notEmpty().withMessage('Fuel type ID is required'),
+  body('transmissao_id').notEmpty().withMessage('Transmission ID is required'),
 ];
 
 const updateVehicleRules = [
   body('modelo').optional().notEmpty().withMessage('Model cannot be empty'),
   body('preco').optional().isDecimal().withMessage('Price must be a decimal'),
   body('quilometragem').optional().isInt().withMessage('Mileage must be an integer'),
-  body('tipo_combustivel').optional().notEmpty().withMessage('Fuel type cannot be empty'),
-  body('transmissao').optional().notEmpty().withMessage('Transmission cannot be empty'),
+  body('tipo_combustivel_id').optional().notEmpty().withMessage('Fuel type ID cannot be empty'),
+  body('transmissao_id').optional().notEmpty().withMessage('Transmission ID cannot be empty'),
 ];
 
 // Routes

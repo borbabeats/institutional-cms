@@ -5,6 +5,8 @@ import Vehicles from '../models/Vehicles';
 import VehicleMarca from '../models/VehicleMarca';
 import VehicleAno from '../models/VehicleAno';
 import VehicleCor from '../models/VehicleCor';
+import TipoCombustivel from '../models/TipoCombustivel';
+import Transmissao from '../models/Transmissao';
 import VehicleCategories from '../models/VehicleCategories';
 import VehicleImage from '../models/VehicleImage';
 import VehicleOptional from '../models/VehicleOptional';
@@ -18,6 +20,8 @@ class VehicleController {
                     { model: VehicleMarca, as: 'marca' },
                     { model: VehicleAno, as: 'ano' },
                     { model: VehicleCor, as: 'cor' },
+                    { model: TipoCombustivel, as: 'tipo_combustivel' },
+                    { model: Transmissao, as: 'transmissao' },
                     { model: VehicleCategories, as: 'categoria' },
                     { model: VehicleImage, as: 'images' },
                     { model: VehicleOptional, as: 'optionals', through: { attributes: [] } } // Exclude join table attributes
@@ -40,6 +44,8 @@ class VehicleController {
                     { model: VehicleMarca, as: 'marca' },
                     { model: VehicleAno, as: 'ano' },
                     { model: VehicleCor, as: 'cor' },
+                    { model: TipoCombustivel, as: 'tipo_combustivel' },
+                    { model: Transmissao, as: 'transmissao' },
                     { model: VehicleCategories, as: 'categoria' },
                     { model: VehicleImage, as: 'images' },
                     { model: VehicleOptional, as: 'optionals', through: { attributes: [] } } // Exclude join table attributes
@@ -115,6 +121,8 @@ class VehicleController {
                     { model: VehicleAno, as: 'ano' },
                     { model: VehicleCor, as: 'cor' },
                     { model: VehicleCategories, as: 'categoria' },
+                    { model: TipoCombustivel, as: 'tipo_combustivel' },
+                    { model: Transmissao, as: 'transmissao' },
                     { model: VehicleImage, as: 'images' },
                     { model: VehicleOptional, as: 'optionals', through: { attributes: [] } }
                 ]
@@ -155,6 +163,8 @@ class VehicleController {
                     { model: VehicleMarca, as: 'marca' },
                     { model: VehicleAno, as: 'ano' },
                     { model: VehicleCor, as: 'cor' },
+                    { model: TipoCombustivel, as: 'tipo_combustivel' },
+                    { model: Transmissao, as: 'transmissao' },
                     { model: VehicleCategories, as: 'categoria' },
                     { model: VehicleImage, as: 'images' },
                     { model: VehicleOptional, as: 'optionals', through: { attributes: [] } }

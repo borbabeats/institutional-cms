@@ -7,8 +7,8 @@ export interface VehiclesAttributes {
     preco: number;
     descricao: string;
     quilometragem: number;
-    tipo_combustivel: string;
-    transmissao: string;
+    tipo_combustivel_id: number;
+    transmissao_id: number;
     imagem_url: string;
     disponivel: boolean;
     marca_id: number;
@@ -25,8 +25,8 @@ class Vehicles extends Model<VehiclesAttributes, VehiclesCreationAttributes> imp
     public preco!: number;
     public descricao!: string;
     public quilometragem!: number;
-    public tipo_combustivel!: string;
-    public transmissao!: string;
+    public tipo_combustivel_id!: number;
+    public transmissao_id!: number;
     public imagem_url!: string;
     public disponivel!: boolean;
     public marca_id!: number;
@@ -62,12 +62,12 @@ Vehicles.init(
             type: DataTypes.INTEGER.UNSIGNED,
             allowNull: false,
         },
-        tipo_combustivel: {
-            type: new DataTypes.STRING(50),
+        tipo_combustivel_id: {
+            type: DataTypes.INTEGER.UNSIGNED,
             allowNull: false,
         },
-        transmissao: {
-            type: new DataTypes.STRING(50),
+        transmissao_id: {
+            type: DataTypes.INTEGER.UNSIGNED,
             allowNull: false,
         },
         imagem_url: {

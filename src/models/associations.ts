@@ -9,6 +9,8 @@ import VehicleCategories from './VehicleCategories';
 import VehicleImage from './VehicleImage';
 import VehicleOptional from './VehicleOptional';
 import VehicleToOptional from './VehicleToOptional';
+import TipoCombustivel from './TipoCombustivel';
+import Transmissao from './Transmissao';
 
 const setupAssociations = () => {
   // Post belongs to Category
@@ -47,6 +49,29 @@ const setupAssociations = () => {
 
   Vehicles.belongsTo(VehicleCategories, { foreignKey: 'categoria_id', as: 'categoria' });
   VehicleCategories.hasMany(Vehicles, { foreignKey: 'categoria_id', as: 'vehicles' });
+
+  // Add TipoCombustivel and Transmissao associations
+  Vehicles.belongsTo(TipoCombustivel, { 
+    foreignKey: 'tipo_combustivel_id', 
+    as: 'tipo_combustivel',
+    targetKey: 'id'
+  });
+  
+  TipoCombustivel.hasMany(Vehicles, { 
+    foreignKey: 'tipo_combustivel_id', 
+    as: 'vehicles'
+  });
+
+  Vehicles.belongsTo(Transmissao, { 
+    foreignKey: 'transmissao_id', 
+    as: 'transmissao',
+    targetKey: 'id'
+  });
+  
+  Transmissao.hasMany(Vehicles, { 
+    foreignKey: 'transmissao_id', 
+    as: 'vehicles'
+  });
 
   // Vehicle-Image associations
   Vehicles.hasMany(VehicleImage, { foreignKey: 'vehicle_id', as: 'images' });
