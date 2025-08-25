@@ -9,8 +9,8 @@ import VehicleCategories from './VehicleCategories';
 import VehicleImage from './VehicleImage';
 import VehicleOptional from './VehicleOptional';
 import VehicleToOptional from './VehicleToOptional';
-import TipoCombustivel from './TipoCombustivel';
-import Transmissao from './Transmissao';
+import TipoCombustivel from './VehicleTipoCombustivel';
+import Transmissao from './VehicleTransmissao';
 
 const setupAssociations = () => {
   // Post belongs to Category

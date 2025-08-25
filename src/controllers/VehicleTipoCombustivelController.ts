@@ -1,9 +1,9 @@
 import { Request, Response } from 'express';
 import { validationResult } from 'express-validator';
-import TipoCombustivel from '../models/TipoCombustivel';
+import TipoCombustivel from '../models/VehicleTipoCombustivel';
 
 class VehicleTipoCombustivelController {
-    //Get all colors
+    //Get all combustiveis
     static async index(_req: Request, res: Response) {
         try {
             const vehicleTipoCombustivel = await TipoCombustivel.findAll({
@@ -16,7 +16,7 @@ class VehicleTipoCombustivelController {
         }
     }
 
-    //Get a single color by ID
+    //Get a single combustivel by ID
     static async show(req: Request, res: Response) {
         try {
             const { id } = req.params;
@@ -33,7 +33,7 @@ class VehicleTipoCombustivelController {
         }
     }
         
-    //Create a new color
+    //Create a new combustivel
     static async store(req: Request, res: Response) {
         const errors = validationResult(req);
         if (!errors.isEmpty()) {
@@ -50,7 +50,7 @@ class VehicleTipoCombustivelController {
         }
     }
         
-    //Update a color
+    //Update a combustivel
     static async update(req: Request, res: Response) {
         const errors = validationResult(req);
         if (!errors.isEmpty()) {
@@ -74,7 +74,7 @@ class VehicleTipoCombustivelController {
         }
     }
         
-    //Delete a color
+    //Delete a combustivel
     static async destroy(req: Request, res: Response) {
         try {
             const { id } = req.params;
