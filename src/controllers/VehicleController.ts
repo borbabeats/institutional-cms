@@ -10,11 +10,19 @@ import Transmissao from '../models/VehicleTransmissao';
 import VehicleCategories from '../models/VehicleCategories';
 import VehicleImage from '../models/VehicleImage';
 import VehicleOptional from '../models/VehicleOptional';
+import CacheService from '../services/CacheService';
 
 class VehicleController {
     // Get all vehicles
     static async index(_req: Request, res: Response) {
         try {
+            const cacheKey = 'vehicles:all';
+            const cached = CacheService.get(cacheKey);
+            
+            if (cached) {
+                return res.json(cached);
+            }
+
             const vehicles = await Vehicles.findAll({
                 include: [
                     { model: VehicleMarca, as: 'marca' },
@@ -28,6 +36,8 @@ class VehicleController {
                 ],
                 order: [['modelo', 'ASC']]
             });
+            
+            CacheService.set(cacheKey, vehicles);
             return res.json(vehicles);
         } catch (error) {
             console.error('Error fetching vehicles:', error);
@@ -84,6 +94,9 @@ class VehicleController {
                 include: [{ model: VehicleOptional, as: 'optionals', through: { attributes: [] } }]
             });
 
+            // Limpa cache após criar veículo
+            CacheService.clearVehicleCache();
+
             return res.status(201).json(result);
         } catch (error) {
             console.error('Error creating vehicle:', error);
@@ -128,6 +141,9 @@ class VehicleController {
                 ]
             });
             
+            // Limpa cache após atualizar veículo
+            CacheService.clearVehicleCache();
+            
             return res.json(result);
         } catch (error) {
             console.error('Error updating vehicle:', error);
@@ -139,6 +155,13 @@ class VehicleController {
     static async search(req: Request, res: Response) {
         try {
             const { page = 1, limit = 10, cor_id, marca_id, categoria_id, preco_min, preco_max } = req.query;
+            
+            const cacheKey = `vehicles:search:${JSON.stringify(req.query)}`;
+            const cached = CacheService.get(cacheKey);
+            
+            if (cached) {
+                return res.json(cached);
+            }
 
             const where: any = {};
             if (cor_id) where.cor_id = cor_id;
@@ -174,12 +197,15 @@ class VehicleController {
                 order: [['modelo', 'ASC']]
             });
 
-            return res.json({
+            const result = {
                 totalItems: count,
                 totalPages: Math.ceil(count / Number(limit)),
                 currentPage: Number(page),
                 vehicles: rows
-            });
+            };
+            
+            CacheService.set(cacheKey, result);
+            return res.json(result);
         } catch (error) {
             console.error('Error searching vehicles:', error);
             return res.status(500).json({ error: 'Internal server error' });
@@ -197,6 +223,10 @@ class VehicleController {
             }
             
             await vehicle.destroy();
+            
+            // Limpa cache após deletar veículo
+            CacheService.clearVehicleCache();
+            
             return res.status(204).send();
         } catch (error) {
             console.error('Error deleting vehicle:', error);
