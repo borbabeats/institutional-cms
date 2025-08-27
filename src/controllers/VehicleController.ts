@@ -135,7 +135,7 @@ class VehicleController {
         }
     }
         
-    // Delete a vehicle
+    // Search vehicles with pagination
     static async search(req: Request, res: Response) {
         try {
             const { page = 1, limit = 10, cor_id, marca_id, categoria_id, preco_min, preco_max } = req.query;
@@ -159,6 +159,8 @@ class VehicleController {
                 where,
                 limit: Number(limit),
                 offset,
+                distinct: true,
+                col: 'id',
                 include: [
                     { model: VehicleMarca, as: 'marca' },
                     { model: VehicleAno, as: 'ano' },
