@@ -10,7 +10,7 @@ import Transmissao from '../models/VehicleTransmissao';
 import VehicleCategories from '../models/VehicleCategories';
 import VehicleImage from '../models/VehicleImage';
 import VehicleOptional from '../models/VehicleOptional';
-import CacheService from '../services/CacheService';
+import CacheService from '../services/SimpleCacheService';
 
 class VehicleController {
     // Get all vehicles

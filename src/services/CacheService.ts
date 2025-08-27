@@ -4,8 +4,15 @@ class CacheService {
     private cache: NodeCache;
 
     constructor() {
-        // Cache por 5 minutos (300 segundos)
-        this.cache = new NodeCache({ stdTTL: 300, checkperiod: 60 });
+        // Cache por 5 minutos (300 segundos) com configurações mais conservadoras
+        this.cache = new NodeCache({ 
+            stdTTL: 300, 
+            checkperiod: 120,
+            useClones: false,
+            deleteOnExpire: true,
+            enableLegacyCallbacks: false,
+            maxKeys: 100
+        });
     }
 
     get(key: string): any {
