@@ -19,7 +19,7 @@ import setupAssociations from './models/associations';
 const app = express();
 
 // Middleware
-app.use(cors({ origin: ['https://institutional-basic.vercel.app', 'https://dashboard-central.vercel.app', 'http://localhost:3001'] }));
+app.use(cors({ origin: ['https://institutional-basic.vercel.app', 'https://dashboard-central.vercel.app', 'http://localhost:3001', 'https://ritter-nextjs.vercel.app'] }));
 app.use(express.json());
 
 // Configure model associations
