@@ -13,7 +13,7 @@ class CacheService {
     }
 
     set(key: string, value: any, ttl?: number): boolean {
-        return this.cache.set(key, value, ttl);
+        return this.cache.set(key, value, ttl ?? 300);
     }
 
     del(key: string): number {
