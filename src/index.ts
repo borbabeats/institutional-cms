@@ -46,6 +46,7 @@ app.get('/', (_req: Request, res: Response) => {
 });
 
 // API Routes
+app.use('/api/categories', categoryRoutes);
 app.use('/api/authors', authorRoutes);
 app.use('/api/posts', postRoutes);
 app.use('/api', categoryRoutes);
