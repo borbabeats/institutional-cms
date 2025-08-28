@@ -160,7 +160,7 @@ class PostController {
         content, 
         author_id, 
         category_id = 1, 
-        status = 'draft', 
+        status = 'published', 
         excerpt, 
         image_url 
       } = req.body;
