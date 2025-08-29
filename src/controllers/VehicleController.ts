@@ -241,40 +241,29 @@ class VehicleController {
         
         try {
             const { id } = req.params;
-            const vehicle = await Vehicles.findByPk(id, {
-                include: [
-                    { model: VehicleImage, as: 'images' },
-                    { model: VehicleToOptional, as: 'vehicleOptionals' }
-                ],
-                transaction
-            }) as Vehicles & {
-                images?: VehicleImage[];
-                vehicleOptionals?: VehicleToOptional[];
-            };
             
-            if (!vehicle) {
+            // First, delete all related images
+            await VehicleImage.destroy({
+                where: { vehicle_id: id },
+                transaction
+            });
+            
+            // Then, delete all related optionals from the join table
+            await VehicleToOptional.destroy({
+                where: { vehicle_id: id },
+                transaction
+            });
+            
+            // Finally, delete the vehicle
+            const deleted = await Vehicles.destroy({
+                where: { id },
+                transaction
+            });
+            
+            if (!deleted) {
                 await transaction.rollback();
                 return res.status(404).json({ error: 'Vehicle not found' });
             }
-            
-            // Delete related images
-            if (vehicle.images && vehicle.images.length > 0) {
-                await VehicleImage.destroy({
-                    where: { vehicle_id: id },
-                    transaction
-                });
-            }
-            
-            // Delete related optionals
-            if (vehicle.vehicleOptionals && vehicle.vehicleOptionals.length > 0) {
-                await VehicleToOptional.destroy({
-                    where: { vehicle_id: id },
-                    transaction
-                });
-            }
-            
-            // Delete the vehicle
-            await vehicle.destroy({ transaction });
             
             // Commit the transaction
             await transaction.commit();
