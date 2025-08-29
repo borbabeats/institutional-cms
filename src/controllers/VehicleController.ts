@@ -80,7 +80,7 @@ class VehicleController {
             return res.status(400).json({ errors: errors.array() });
         }
 
-        const { optionals, ...vehicleData } = req.body;
+        const { optionals, images = [], ...vehicleData } = req.body;
 
         try {
             const vehicle = await Vehicles.create(vehicleData);
@@ -89,9 +89,23 @@ class VehicleController {
                 await (vehicle as any).setOptionals(optionals);
             }
 
+            // Criar imagens se fornecidas
+            if (Array.isArray(images) && images.length > 0) {
+                await VehicleImage.bulkCreate(
+                    images.map((url: string, index: number) => ({
+                        vehicle_id: vehicle.id,
+                        url,
+                        ordem: index + 1
+                    }))
+                );
+            }
+
             // Reload the instance to get the associations
             const result = await Vehicles.findByPk(vehicle.id, {
-                include: [{ model: VehicleOptional, as: 'optionals', through: { attributes: [] } }]
+                include: [
+                    { model: VehicleOptional, as: 'optionals', through: { attributes: [] } },
+                    { model: VehicleImage, as: 'images' }
+                ]
             });
 
             // Limpa cache após criar veículo
