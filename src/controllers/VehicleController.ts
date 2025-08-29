@@ -98,13 +98,13 @@ class VehicleController {
                 await (vehicle as any).setOptionals(optionals);
             }
 
-            // Criar imagens se fornecidas
+            // Create images if provided
             if (Array.isArray(images) && images.length > 0) {
                 await VehicleImage.bulkCreate(
-                    images.map((url: string, index: number) => ({
+                    images.map((img: { url: string, ordem?: number }, index: number) => ({
                         vehicle_id: vehicle.id,
-                        url,
-                        ordem: index + 1
+                        url: img.url,
+                        ordem: img.ordem ?? index + 1
                     }))
                 );
             }
@@ -135,7 +135,7 @@ class VehicleController {
         }
 
         const { id } = req.params;
-        const { optionals, ...vehicleData } = req.body;
+        const { optionals, images, ...vehicleData } = req.body;
 
         try {
             const vehicle = await Vehicles.findByPk(id);
@@ -146,8 +146,26 @@ class VehicleController {
             
             await vehicle.update(vehicleData);
 
-            if (optionals) { // Handle optional updates, including removal
+            // Handle optionals updates, including removal
+            if (optionals) {
                 await (vehicle as any).setOptionals(optionals);
+            }
+
+            // Handle images updates
+            if (Array.isArray(images)) {
+                // First, remove all existing images
+                await VehicleImage.destroy({ where: { vehicle_id: id } });
+                
+                // Then create new ones if any were provided
+                if (images.length > 0) {
+                    await VehicleImage.bulkCreate(
+                        images.map((img: { url: string, ordem?: number }, index: number) => ({
+                            vehicle_id: id,
+                            url: img.url,
+                            ordem: img.ordem ?? index + 1
+                        }))
+                    );
+                }
             }
 
             // Reload the instance to get the associations
