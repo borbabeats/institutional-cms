@@ -3,14 +3,23 @@ import { Op } from 'sequelize';
 import { validationResult } from 'express-validator';
 import Vehicles from '../models/Vehicles';
 import VehicleMarca from '../models/VehicleMarca';
+import VehicleImage from '../models/VehicleImage';
+import VehicleToOptional from '../models/VehicleToOptional';
+import sequelize from '../database/sequelize';
 import VehicleAno from '../models/VehicleAno';
 import VehicleCor from '../models/VehicleCor';
 import TipoCombustivel from '../models/VehicleTipoCombustivel';
 import Transmissao from '../models/VehicleTransmissao';
 import VehicleCategories from '../models/VehicleCategories';
-import VehicleImage from '../models/VehicleImage';
 import VehicleOptional from '../models/VehicleOptional';
 import CacheService from '../services/SimpleCacheService';
+
+declare module '../models/Vehicles' {
+  interface Vehicles {
+    images?: VehicleImage[];
+    vehicleOptionals?: VehicleToOptional[];
+  }
+}
 
 class VehicleController {
     // Get all vehicles
@@ -228,23 +237,61 @@ class VehicleController {
 
     // Delete a vehicle
     static async destroy(req: Request, res: Response) {
+        const transaction = await sequelize.transaction();
+        
         try {
             const { id } = req.params;
-            const vehicle = await Vehicles.findByPk(id);
+            const vehicle = await Vehicles.findByPk(id, {
+                include: [
+                    { model: VehicleImage, as: 'images' },
+                    { model: VehicleToOptional, as: 'vehicleOptionals' }
+                ],
+                transaction
+            }) as Vehicles & {
+                images?: VehicleImage[];
+                vehicleOptionals?: VehicleToOptional[];
+            };
             
             if (!vehicle) {
+                await transaction.rollback();
                 return res.status(404).json({ error: 'Vehicle not found' });
             }
             
-            await vehicle.destroy();
+            // Delete related images
+            if (vehicle.images && vehicle.images.length > 0) {
+                await VehicleImage.destroy({
+                    where: { vehicle_id: id },
+                    transaction
+                });
+            }
             
-            // Limpa cache após deletar veículo
+            // Delete related optionals
+            if (vehicle.vehicleOptionals && vehicle.vehicleOptionals.length > 0) {
+                await VehicleToOptional.destroy({
+                    where: { vehicle_id: id },
+                    transaction
+                });
+            }
+            
+            // Delete the vehicle
+            await vehicle.destroy({ transaction });
+            
+            // Commit the transaction
+            await transaction.commit();
+            
+            // Clear cache after deleting vehicle
             CacheService.clearVehicleCache();
             
             return res.status(204).send();
-        } catch (error) {
+        } catch (error: unknown) {
+            // Rollback the transaction in case of any error
+            await transaction.rollback();
             console.error('Error deleting vehicle:', error);
-            return res.status(500).json({ error: 'Internal server error' });
+            const errorMessage = error instanceof Error ? error.message : 'Unknown error occurred';
+            return res.status(500).json({ 
+                error: 'Failed to delete vehicle',
+                details: errorMessage
+            });
         }
     }
 }
